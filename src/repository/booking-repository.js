@@ -22,6 +22,4 @@ class BookingRepository {
     }
 }
 
-module.exports = {
-    BookingRepository 
-}
+module.exports = BookingRepository;
