@@ -11,5 +11,5 @@ router.get('/', (req, res) => {
 router.post('/bookings', BookingController.create);
 router.patch('/bookings/:id', bookingMiddleware.validBookingId, bookingMiddleware.validUpdate, BookingController.update);
 router.get('/bookings/:id', bookingMiddleware.validBookingId, BookingController.get);
-
+router.delete('/bookings/:id', bookingMiddleware.validBookingId, BookingController.cancel);
 module.exports = router;
