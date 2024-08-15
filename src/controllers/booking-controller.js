@@ -60,8 +60,28 @@ const get = async (req, res) => {
     }
 }
 
+const cancel = async (req, res) => {
+    try {
+        await bookingService.cancelBooking(req.params.id);
+        return res.status(StatusCodes.OK).json({
+            data: {},
+            success: true,
+            message: "Booking cancellation successful",
+            error: {}
+        });
+    } catch (error) {
+        return res.status(error.statusCode).json({
+            data: {},
+            success: false,
+            message: error.message,
+            error: error.reason
+        });
+    }
+}
+
 module.exports = {
     create,
     update,
-    get
+    get,
+    cancel
 }
