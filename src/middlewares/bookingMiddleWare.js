@@ -1,15 +1,6 @@
 const { StatusCodes } = require("http-status-codes")
 
 const validUpdate = ( req, res, next ) => {
-    if(isNaN(req.params.id)) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-            data: {},
-            success: false,
-            message: 'Incorrect Id',
-            error: 'Ids must be numeric in nature'
-        });
-    }
-
     if(!req.body.flightId || !req.body.noOfSeats) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             data: {},
