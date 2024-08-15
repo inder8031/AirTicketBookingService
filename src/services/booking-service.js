@@ -35,7 +35,6 @@ class BookingService {
                 );
             }
             let priceOfFlight = flightDetails.price;
-            console.log(priceOfFlight);
             if(data.noOfSeats > flightDetails.totalSeats) {
                 throw new ServiceError(
                     'Booking failed',
@@ -73,7 +72,6 @@ class BookingService {
             }
 
             if(data.flightId == prevBooking.flightId && data.noOfSeats == prevBooking.noOfSeats) {
-                console.log("2");
                 return prevBooking;   
             }
 
@@ -155,7 +153,7 @@ class BookingService {
                     totalSeats: prevTotalSeats
                 });
             }
-            
+
             await axios.patch(flightServiceUpdateReqURL, {
                 totalSeats: totalSeats
             });
@@ -175,6 +173,37 @@ class BookingService {
         try {
             const booking = await this.bookingRepository.getById(bookingId);
             return booking;
+        } catch (error) {
+            if(error.name == 'RepositoryError' || error.name == 'ValidationError' || error.name == 'ClientError') {
+                throw error;
+            }
+
+            throw new ServiceError();
+        }
+    }
+
+    async cancelBooking(bookingId) {
+        try {
+            const prevBooking = await this.bookingRepository.getById(bookingId);
+            if(!prevBooking) {
+                throw new AppError(
+                    'ClientError',
+                    'Booking not found',
+                    'There was no such booking done previously. Book first.',
+                    StatusCodes.BAD_REQUEST
+                );
+            }
+            const response = await this.bookingRepository.delete(bookingId);
+
+            const prevFlightServiceGetReqURL = `${FLIGHT_SERVICE_PATH}/api/v1/flights/${prevBooking.flightId}`;
+            const { data: { data: prevFlightDetails } } = await axios.get(prevFlightServiceGetReqURL);
+
+            const prevFlightServiceUpdateReqURL = `${UPDATE_FLIGHT_SERVICE_PATH}/api/v1/flights/${prevBooking.flightId}`;
+            await axios.patch(prevFlightServiceUpdateReqURL, {
+                totalSeats: prevFlightDetails.totalSeats + prevBooking.noOfSeats
+            });
+
+            return response;
         } catch (error) {
             if(error.name == 'RepositoryError' || error.name == 'ValidationError' || error.name == 'ClientError') {
                 throw error;
