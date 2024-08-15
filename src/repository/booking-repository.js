@@ -32,6 +32,15 @@ class BookingRepository {
             if(data.status) {
                 booking.status = data.status;
             }
+            if(data.flightId) {
+                booking.flightId = data.flightId;
+            }
+            if(data.noOfSeats) {
+                booking.noOfSeats = data.noOfSeats;
+            }
+            if(data.totalCost) {
+                booking.totalCost = data.totalCost;
+            }
             booking.save();
             return booking;
         } catch (error) {
@@ -39,6 +48,20 @@ class BookingRepository {
                 'RepositoryError',
                 'Booking Updation failed',
                 'An error occured during updation, Please try again later',
+                StatusCodes.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    async getById(bookingId) {
+        try {
+            const booking = await Booking.findByPk(bookingId);
+            return booking;
+        } catch (error) {
+            throw new AppError(
+                'RepositoryError',
+                'Could not fetch booking details',
+                'An error occured during retrieving booking details, Please try again later',
                 StatusCodes.INTERNAL_SERVER_ERROR
             );
         }
