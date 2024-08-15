@@ -9,6 +9,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/bookings', BookingController.create);
-router.patch('/bookings/:id', bookingMiddleware.validUpdate, BookingController.update);
+router.patch('/bookings/:id', bookingMiddleware.validBookingId, bookingMiddleware.validUpdate, BookingController.update);
+router.get('/bookings/:id', bookingMiddleware.validBookingId, BookingController.get);
 
 module.exports = router;
