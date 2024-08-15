@@ -3,7 +3,7 @@ const { StatusCodes } = require("http-status-codes")
 const validUpdate = ( req, res, next ) => {
     if(isNaN(req.params.id)) {
         return res.status(StatusCodes.BAD_REQUEST).json({
-            data: { type: typeof req.params.id, val: isNaN(req.params.id), num: req.params.id },
+            data: {},
             success: false,
             message: 'Incorrect Id',
             error: 'Ids must be numeric in nature'
@@ -31,6 +31,32 @@ const validUpdate = ( req, res, next ) => {
     next();
 }
 
+const validBookingId = (req, res, next) => {
+    let bookingId = req.params.id;
+    bookingId = bookingId.trim();
+
+    if(bookingId.length == 0) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            data: {},
+            success: false,
+            message: 'User must provide booking id',
+            error: 'Booking id found empty'
+        });
+    }
+
+    if(isNaN(req.params.id)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            data: {},
+            success: false,
+            message: 'Incorrect Booking Id',
+            error: 'Ids must be numeric in nature'
+        });
+    }
+
+    next();
+}
+
 module.exports = {
-    validUpdate
+    validUpdate,
+    validBookingId
 }
