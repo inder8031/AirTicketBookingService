@@ -41,7 +41,27 @@ const update = async (req, res) => {
     }
 }
 
+const get = async (req, res) => {
+    try {
+        const booking = await bookingService.getBooking(req.params.id);
+        return res.status(StatusCodes.OK).json({
+            data: booking,
+            success: true,
+            message: "Successfully fetched booking details",
+            error: {}
+        });
+    } catch (error) {
+        return res.status(error.statusCode).json({
+            data: {},
+            success: false,
+            message: error.message,
+            error: error.reason
+        });
+    }
+}
+
 module.exports = {
     create,
     update,
+    get
 }
