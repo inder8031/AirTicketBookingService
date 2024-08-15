@@ -1,5 +1,6 @@
 const express = require('express');
 const { BookingController } = require('../../controllers/index');
+const { bookingMiddleware } = require('../../middlewares/index');
 
 const router = express.Router();
 
@@ -8,5 +9,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/bookings', BookingController.create);
+router.patch('/bookings/:id', bookingMiddleware.validUpdate, BookingController.update);
 
 module.exports = router;
