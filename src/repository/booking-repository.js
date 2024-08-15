@@ -66,6 +66,25 @@ class BookingRepository {
             );
         }
     }
+
+    async delete(bookingId) {
+        try {
+            await Booking.destroy({
+                where: {
+                    id: bookingId
+                }
+            });
+
+            return true;
+        } catch (error) {
+            throw new AppError(
+                'RepositoryError',
+                'Could not cancel booking',
+                'An error occured during booking cancellation, Please try again later',
+                StatusCodes.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
 
 module.exports = BookingRepository;
