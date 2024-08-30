@@ -9,8 +9,16 @@ const bookingService = new BookingService();
 const sendMessageQueue = async (req, res) => {
     try {
         const channel = await createChannel();
-        const data = { message: "Success" };
-        publishMessage(channel, REMINDER_BINDING_KEY, JSON.stringify(data));
+        const payload = {
+            service : "CREATE_NOTIFICATION",
+            data : {
+                subject: "Testing Message Queue",
+                content: "Testing if message queue setup is done correctly or not.",
+                recepientEmail: "reminderservice12@gmail.com",
+                notificationTime: "2024-08-31T03:56:00"
+            }
+        };
+        publishMessage(channel, REMINDER_BINDING_KEY, JSON.stringify(payload));
         return res.status(StatusCodes.OK).json({
             success: true,
             message: "Successfully published the event",
