@@ -1,7 +1,29 @@
 const { StatusCodes } = require('http-status-codes');
+
 const { BookingService } = require('../services/index');
+const { createChannel, publishMessage } = require('../utils/messageQueue');
+const { REMINDER_BINDING_KEY } = require('../config/serverConfig');
 
 const bookingService = new BookingService();
+
+const sendMessageQueue = async (req, res) => {
+    try {
+        const channel = await createChannel();
+        const data = { message: "Success" };
+        publishMessage(channel, REMINDER_BINDING_KEY, JSON.stringify(data));
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            message: "Successfully published the event",
+            error: {}
+        });
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Failed to publish the event",
+            error: error
+        });
+    }
+}
 
 const create = async (req, res) => {
     try {
@@ -83,5 +105,6 @@ module.exports = {
     create,
     update,
     get,
-    cancel
+    cancel,
+    sendMessageQueue
 }
